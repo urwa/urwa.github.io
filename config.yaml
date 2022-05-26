@@ -9,7 +9,7 @@ params:
     Content: The learnings and unlearnings of a data person
   socialIcons:
     - name: "Linkedin"
-      url: "linkedin.com/in/urvahshabbir/"
+      url: "https://linkedin.com/in/urvahshabbir/"
     - name: "Github"
       url: "https://github.com/urwa"
     - name: "StackOverflow"
