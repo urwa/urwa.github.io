@@ -6,7 +6,7 @@ params:
   defaultTheme: auto
   homeInfoParams:
     Title: Data Engineering Next Door
-    Content: The learnings and unlearnings of a data person
+    Content: The learnings and unlearnings of a data point
   socialIcons:
     - name: "Linkedin"
       url: "https://linkedin.com/in/urvahshabbir/"
