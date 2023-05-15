@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Terraform, Google Service Accounts and how to deploy Cloud Functions using Cloud Build | Urvah Shabbir</title>
+<meta name="keywords" content="terraform, google-cloud-platform, google-service-account, cloud-functions, cloud-build">
+<meta name="description" content="The background you might want to skip reading I did not go with the usual path of deploying cloud functions using terraform by zipping source code, uploading code to google cloud storage and then creating/deploying cloud functions. Not to forget the service accounts and permissions that have to be set.
+Why?
+Here are my reasons:
+ Terraform still does not provide an inbuilt feature to check if there is a change in codebase.">
+<meta name="author" content="">
+<link rel="canonical" href="https://urwa.github.io/posts/gcp-terraform/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.ec8da366ca2fb647537ccb7a8f6fa5b4e9cd3c7a0d3171dd2d3baad1e49c8bfc.css" integrity="sha256-7I2jZsovtkdTfMt6j2&#43;ltOnNPHoNMXHdLTuq0eSci/w=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js" integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5&#43;kdJvBz5iKbt6B5PJI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://urwa.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://urwa.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://urwa.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://urwa.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://urwa.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Terraform, Google Service Accounts and how to deploy Cloud Functions using Cloud Build" />
+<meta property="og:description" content="The background you might want to skip reading I did not go with the usual path of deploying cloud functions using terraform by zipping source code, uploading code to google cloud storage and then creating/deploying cloud functions. Not to forget the service accounts and permissions that have to be set.
+Why?
+Here are my reasons:
+ Terraform still does not provide an inbuilt feature to check if there is a change in codebase." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://urwa.github.io/posts/gcp-terraform/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-06-26T09:43:10&#43;05:00" />
+<meta property="article:modified_time" content="2022-06-26T09:43:10&#43;05:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Terraform, Google Service Accounts and how to deploy Cloud Functions using Cloud Build"/>
+<meta name="twitter:description" content="The background you might want to skip reading I did not go with the usual path of deploying cloud functions using terraform by zipping source code, uploading code to google cloud storage and then creating/deploying cloud functions. Not to forget the service accounts and permissions that have to be set.
+Why?
+Here are my reasons:
+ Terraform still does not provide an inbuilt feature to check if there is a change in codebase."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://urwa.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Terraform, Google Service Accounts and how to deploy Cloud Functions using Cloud Build",
+      "item": "https://urwa.github.io/posts/gcp-terraform/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Terraform, Google Service Accounts and how to deploy Cloud Functions using Cloud Build",
+  "name": "Terraform, Google Service Accounts and how to deploy Cloud Functions using Cloud Build",
+  "description": "The background you might want to skip reading I did not go with the usual path of deploying cloud functions using terraform by zipping source code, uploading code to google cloud storage and then creating/deploying cloud functions. Not to forget the service accounts and permissions that have to be set.\nWhy?\nHere are my reasons:\n Terraform still does not provide an inbuilt feature to check if there is a change in codebase.",
+  "keywords": [
+    "terraform", "google-cloud-platform", "google-service-account", "cloud-functions", "cloud-build"
+  ],
+  "articleBody": "The background you might want to skip reading I did not go with the usual path of deploying cloud functions using terraform by zipping source code, uploading code to google cloud storage and then creating/deploying cloud functions. Not to forget the service accounts and permissions that have to be set.\nWhy?\nHere are my reasons:\n Terraform still does not provide an inbuilt feature to check if there is a change in codebase. My code was in github and I did not wanted to upload it to google cloud storage (double work) and then do deployment. The hacks for hashing was not working for me. I could not figure out the service account permissions for all the above work. I already had continuous deployment via cloud build in place that I wanted to bring under terraform umberalla.  The workflow that you might be interested in Here is how the workflow worked:\n You do local development, highly recommend using functions-framework for this. Then you push it your feature branch and open a pull request. This triggers the cloud build workflow. Cloud build checks if changes have been made in your target cloud functions folder, it deploys that function.  To terraform this, I did the following:\n Created cloud build trigger using terraform. Created google service accounts using terraform. Deployed all this code through my terraform workflow (which is also via another separate cloud build trigger).  My kids are crying… I will share code and more details once I have them distracted with something.\nHave questions? Reach out to me via Linkedin!\nSee ya later! alligator!!!\n",
+  "wordCount" : "262",
+  "inLanguage": "en",
+  "datePublished": "2022-06-26T09:43:10+05:00",
+  "dateModified": "2022-06-26T09:43:10+05:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://urwa.github.io/posts/gcp-terraform/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Urvah Shabbir",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://urwa.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://urwa.github.io/" accesskey="h" title="Urvah Shabbir (Alt + H)">Urvah Shabbir</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      Terraform, Google Service Accounts and how to deploy Cloud Functions using Cloud Build
+    </h1>
+    <div class="post-meta"><span title='2022-06-26 09:43:10 +0500 PKT'>June 26, 2022</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h2 id="the-background-you-might-want-to-skip-reading">The background you might want to skip reading<a hidden class="anchor" aria-hidden="true" href="#the-background-you-might-want-to-skip-reading">#</a></h2>
+<p>I did not go with the usual path of deploying cloud functions using terraform by zipping source code,
+uploading code to google cloud storage and then creating/deploying cloud functions. Not to forget the service accounts
+and permissions that have to be set.</p>
+<p>Why?</p>
+<p>Here are my reasons:</p>
+<ul>
+<li>Terraform still does not provide an inbuilt feature to check if there is a change in codebase.</li>
+<li>My code was in github and I did not wanted to upload it to google cloud storage (double work) and then do deployment.</li>
+<li>The hacks for hashing was not working for me.</li>
+<li>I could not figure out the service account permissions for all the above work.</li>
+<li>I already had continuous deployment via cloud build in place that I wanted to bring under terraform umberalla.</li>
+</ul>
+<h2 id="the-workflow-that-you-might-be-interested-in">The workflow that you might be interested in<a hidden class="anchor" aria-hidden="true" href="#the-workflow-that-you-might-be-interested-in">#</a></h2>
+<p>Here is how the workflow worked:</p>
+<ul>
+<li>You do local development, highly recommend using <code>functions-framework</code> for this.</li>
+<li>Then you push it your feature branch and open a pull request.</li>
+<li>This triggers the cloud build workflow.</li>
+<li>Cloud build checks if changes have been made in your target cloud functions folder, it deploys that function.</li>
+</ul>
+<p>To terraform this, I did the following:</p>
+<ul>
+<li>Created cloud build trigger using terraform.</li>
+<li>Created google service accounts using terraform.</li>
+<li>Deployed all this code through my terraform workflow (which is also via another separate cloud build trigger).</li>
+</ul>
+<p>My kids are crying&hellip; I will share code and more details once I have them distracted with something.</p>
+<p><strong><em>Have questions? Reach out to me via <a href="https://linkedin.com/in/urvahshabbir/">Linkedin</a>!</em></strong></p>
+<p>See ya later! alligator!!!</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://urwa.github.io/tags/terraform/">terraform</a></li>
+      <li><a href="https://urwa.github.io/tags/google-cloud-platform/">google-cloud-platform</a></li>
+      <li><a href="https://urwa.github.io/tags/google-service-account/">google-service-account</a></li>
+      <li><a href="https://urwa.github.io/tags/cloud-functions/">cloud-functions</a></li>
+      <li><a href="https://urwa.github.io/tags/cloud-build/">cloud-build</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://urwa.github.io/">Urvah Shabbir</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

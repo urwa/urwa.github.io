@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Posts on Urvah Shabbir</title>
-    <link>https://urwa.github.io/posts/</link>
-    <description>Recent content in Posts on Urvah Shabbir</description>
+    <title>google-service-account on Urvah Shabbir</title>
+    <link>https://urwa.github.io/tags/google-service-account/</link>
+    <description>Recent content in google-service-account on Urvah Shabbir</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 13 May 2023 21:45:32 +0500</lastBuildDate><atom:link href="https://urwa.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 13 May 2023 21:45:32 +0500</lastBuildDate><atom:link href="https://urwa.github.io/tags/google-service-account/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>SFTP Server in Google Cloud Platform - all via Terraform</title>
       <link>https://urwa.github.io/posts/sftp-server-in-gcp/</link>
@@ -18,17 +18,6 @@ The background you might want to skip reading Unfortunately needed to an sftp se
 i know very data engineer of me. and very wicked of the 3rd party data providers ..
 And no they did not have an API.
 And no they could not send in a cloud storage.</description>
-    </item>
-    
-    <item>
-      <title>Cloud Functions Python Packages Artifact Repo</title>
-      <link>https://urwa.github.io/posts/gcp-cloud-functions-python-packages-artifact-repo/</link>
-      <pubDate>Fri, 27 Jan 2023 12:59:12 +0500</pubDate>
-      
-      <guid>https://urwa.github.io/posts/gcp-cloud-functions-python-packages-artifact-repo/</guid>
-      <description>The background you might want to skip reading I had multiple api sources which had some what the same response format and given the architecture in GCP, I had a number of similar python functions that were duplicated across multiple cloud functions. We all know what a mess that is.
-Did the research, came across two ways to solve this
- A monolithic repo with common code in a separate folder and one folder per cloud function.</description>
     </item>
     
     <item>
