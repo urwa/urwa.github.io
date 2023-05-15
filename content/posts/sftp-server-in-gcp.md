@@ -1,11 +1,11 @@
 ---
-title: "SFTP Server in Google Cloud Platform - all through Terraform"
+title: "SFTP Server in Google Cloud Platform - all via Terraform"
 date: 2023-05-13T21:45:32+05:00
 tags: ["terraform", "google-cloud-platform", "google-service-account", "sftp", "google-compute-engine", "virtual-machine", "gcsfuse"]
 draft: false
 ---
 
-
+*DISCLAIMER: complete setup of sftp server on GCP was done via Terraform except for adding secret value in secret manager.*
 ## The background you might want to skip reading
 
 Unfortunately needed to an sftp server to get some files.
