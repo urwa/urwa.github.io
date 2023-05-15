@@ -1,8 +1,8 @@
 ---
 title: "SFTP Server in Google Cloud Platform - all through Terraform"
 date: 2023-05-13T21:45:32+05:00
-tags: ["terraform", "google-cloud-platform", "google-service-account", "sftp", "google-compute-engine", "virtual-machine"]
-draft: true
+tags: ["terraform", "google-cloud-platform", "google-service-account", "sftp", "google-compute-engine", "virtual-machine", "gcsfuse"]
+draft: false
 ---
 
 
