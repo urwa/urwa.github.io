@@ -1,5 +1,5 @@
 ---
-title: "Cloud Functions Python Packages Artifact Repo"
+title: "Re-using Same Code in Different Cloud Functions in GCP"
 date: 2023-01-27T12:59:12+05:00
 draft: false
 ---
@@ -15,7 +15,7 @@ Did the research, came across two ways to solve this
   - Cons: Cloud function deployment has code of all other cloud functions
 - Deploy common code as a package in Artifact Repository.
   - Pros: Clean code for each cloud function
-  - Cons: Deploying the package on Artifact Repository took me soooo long (AND HENCE THIS BLOG POST TO SAVE PEOPLE THE MISERY OF DEPLOYING THEIR FIRST PYTHON PACKAGE ON A PRIVE REPOSITORY)
+  - Cons: Deploying the package on Artifact Repository took me soooo long (AND HENCE THIS BLOG POST TO SAVE PEOPLE THE MISERY OF DEPLOYING THEIR FIRST PYTHON PACKAGE ON A PRIVATE REPOSITORY)
 
 I went with Option 2 because my OCD did not like all the mess in Cloud Function deployment containing irrelevent code.
 

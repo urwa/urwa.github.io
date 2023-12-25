@@ -1,5 +1,5 @@
 ---
-title: "Terraform, Google Service Accounts and how to deploy Cloud Functions using Cloud Build"
+title: "Automating Cloud Functions Deployment"
 date: 2022-06-26T09:43:10+05:00
 tags: ["terraform", "google-cloud-platform", "google-service-account", "cloud-functions", "cloud-build"]
 draft: false

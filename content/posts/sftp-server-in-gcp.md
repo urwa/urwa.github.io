@@ -1,11 +1,12 @@
 ---
-title: "SFTP Server in Google Cloud Platform - all via Terraform"
+title: "A version-controlled way of deploying SFTP Server of Google Cloud Platform"
 date: 2023-05-13T21:45:32+05:00
 tags: ["terraform", "google-cloud-platform", "google-service-account", "sftp", "google-compute-engine", "virtual-machine", "gcsfuse"]
 draft: false
 ---
 
 *DISCLAIMER: complete setup of sftp server on GCP was done via Terraform except for adding secret value in secret manager.*
+
 ## The background you might want to skip reading
 
 Unfortunately needed to an sftp server to get some files.
@@ -93,6 +94,6 @@ sudo -u service_acccount_ssh_name bash -c 'gcsfuse command here'
 ## most helpful article regarding this topic
 
 This was probably the only helpful article regarding this topic.
-https://pomba.net/2022/05/gcp-ssh-into-vms-as-service-account-when-oslogin-is-enabled/
+<https://pomba.net/2022/05/gcp-ssh-into-vms-as-service-account-when-oslogin-is-enabled/>
 
 *Have questions? Reach out to me via [Linkedin](https://linkedin.com/in/urvahshabbir/)!*
